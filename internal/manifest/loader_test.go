@@ -76,3 +76,14 @@ func TestLoadAll(t *testing.T) {
 		t.Errorf("expected 2 manifests, got %d", len(manifests))
 	}
 }
+
+func TestLoadAll_EmptyDir(t *testing.T) {
+	l := manifest.NewLoader(t.TempDir())
+	manifests, err := l.LoadAll()
+	if err != nil {
+		t.Fatalf("unexpected error for empty dir: %v", err)
+	}
+	if len(manifests) != 0 {
+		t.Errorf("expected 0 manifests for empty dir, got %d", len(manifests))
+	}
+}
