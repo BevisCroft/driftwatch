@@ -1,0 +1,6 @@
+manifest_dir: ./manifests
+poll_interval: 15s
+log_level: info
+reporter:
+  format: text
+  out_file: ""
