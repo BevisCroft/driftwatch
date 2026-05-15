@@ -1,0 +1,6 @@
+# driftwatch metrics
+driftwatch_cycles_total 3
+driftwatch_drifts_detected_total 1
+driftwatch_alerts_emitted_total 1
+driftwatch_errors_total 0
+driftwatch_last_cycle_drift 0
