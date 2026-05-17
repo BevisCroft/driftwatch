@@ -49,6 +49,14 @@ func (s *Server) SetCycleResult(driftCount int, err error) {
 	}
 }
 
+// GetStatus returns a snapshot of the current health status.
+// It is safe to call concurrently.
+func (s *Server) GetStatus() Status {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+	return s.status
+}
+
 // ListenAndServe starts the HTTP server. It blocks until the server exits.
 func (s *Server) ListenAndServe() error {
 	mux := http.NewServeMux()
@@ -57,9 +65,7 @@ func (s *Server) ListenAndServe() error {
 }
 
 func (s *Server) handleHealth(w http.ResponseWriter, r *http.Request) {
-	s.mu.RLock()
-	snap := s.status
-	s.mu.RUnlock()
+	snap := s.GetStatus()
 
 	w.Header().Set("Content-Type", "application/json")
 	if !snap.Healthy {
