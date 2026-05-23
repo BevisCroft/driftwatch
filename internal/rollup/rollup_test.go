@@ -92,3 +92,27 @@ func TestAggregate_MultipleServices_Sorted(t *testing.T) {
 		t.Errorf("expected alpha-svc first, got %s", summaries[0].Service)
 	}
 }
+
+func TestAggregate_EmptyResults(t *testing.T) {
+	a := rollup.New(3)
+	summaries := a.Aggregate([]drift.Result{})
+	if len(summaries) != 0 {
+		t.Fatalf("expected 0 summaries for empty input, got %d", len(summaries))
+	}
+}
+
+func TestAggregate_NoDriftMixedWithDrift(t *testing.T) {
+	a := rollup.New(3)
+	results := []drift.Result{
+		makeResult("svc-a", false),
+		makeResult("svc-b", true, "replicas"),
+		makeResult("svc-c", false),
+	}
+	summaries := a.Aggregate(results)
+	if len(summaries) != 1 {
+		t.Fatalf("expected 1 summary, got %d", len(summaries))
+	}
+	if summaries[0].Service != "svc-b" {
+		t.Errorf("expected svc-b, got %s", summaries[0].Service)
+	}
+}
