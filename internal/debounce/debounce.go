@@ -69,3 +69,13 @@ func (d *Debouncer) Purge() {
 		}
 	}
 }
+
+// LastSeen returns the time of the most recent allowed event for the given
+// service and true, or the zero Time and false if the service has no recorded
+// timestamp (i.e. it was never seen or has been reset/purged).
+func (d *Debouncer) LastSeen(service string) (time.Time, bool) {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	t, ok := d.last[service]
+	return t, ok
+}
