@@ -8,7 +8,7 @@ import (
 )
 
 // Debouncer tracks the last notification time per service and suppresses
-// events that arrive within the configured window duration.
+// events that arrive within the configured quiet window duration.
 type Debouncer struct {
 	mu     sync.Mutex
 	window time.Duration
@@ -47,6 +47,13 @@ func (d *Debouncer) Reset(service string) {
 	d.mu.Lock()
 	defer d.mu.Unlock()
 	delete(d.last, service)
+}
+
+// Len returns the number of services currently tracked by the debouncer.
+func (d *Debouncer) Len() int {
+	d.mu.Lock()
+	defer d.mu.Unlock()
+	return len(d.last)
 }
 
 // Purge removes all entries whose last-seen time is older than the window,
