@@ -18,6 +18,7 @@ func Handler(s *Store) http.Handler {
 		case http.MethodDelete:
 			deleteHandler(s, w, r)
 		default:
+			w.Header().Set("Allow", "GET, DELETE")
 			http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
 		}
 	})
