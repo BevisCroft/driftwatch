@@ -52,3 +52,22 @@ func TestDebounce_WindowExpiry_RealTime(t *testing.T) {
 		t.Fatal("expected allow after window expiry")
 	}
 }
+
+// TestDebounce_IndependentKeys verifies that debounce windows are tracked
+// independently per key, so suppressing one key does not affect another.
+func TestDebounce_IndependentKeys(t *testing.T) {
+	d := debounce.New(100 * time.Millisecond)
+
+	if !d.Allow("key-a") {
+		t.Fatal("expected first allow for key-a")
+	}
+	if !d.Allow("key-b") {
+		t.Fatal("expected first allow for key-b to be independent of key-a")
+	}
+	if d.Allow("key-a") {
+		t.Fatal("expected key-a to be suppressed within window")
+	}
+	if d.Allow("key-b") {
+		t.Fatal("expected key-b to be suppressed within window")
+	}
+}
